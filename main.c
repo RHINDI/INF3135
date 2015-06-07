@@ -1,9 +1,10 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 
-int LoadPuzzle();
+int LoadPuzzle(char *argv[]);
 
 int removeNL(char *str);
 
@@ -22,6 +23,7 @@ void horiVertiFillWord(int nbrWord);
 void ShowPuzzle();
 
 void ShowResult();
+void validerUsage(int argc);
 
 #define MAX_COL_LINE 13
 #define MAX_WORD 50
@@ -45,7 +47,10 @@ int main(int argc, char **argv)
    FILE *file;
    int wordLength;
    int nbrWord = 0;
-   if (LoadPuzzle())
+
+   validerUsage(argc);
+
+   if (LoadPuzzle(argv))
    {
       //ShowPuzzle();
       if ((file = fopen("words.txt", "r")) != NULL)
@@ -60,13 +65,22 @@ int main(int argc, char **argv)
             }
             ++nbrWord;
          }
-         horiVertiFillWord(nbrWord);
-        // ShowPuzzle();
-         ShowResult();
          fclose(file);
       }
+      horiVertiFillWord(nbrWord);
+      // ShowPuzzle();
+      ShowResult();
    }
    return 0;
+}
+
+void validerUsage(int argc)
+{
+   if (argc != 2)
+   {
+      printf("Utilisation du programme main.c :\nmain.c <fichier source>\n");
+      exit(1);
+   }
 }
 
 int horizontalSearch(char *word, int wordLength, int nbrWord)
@@ -191,16 +205,16 @@ void horiVertiFillWord(int nbrWord)
    }
 }
 
-int LoadPuzzle()
+int LoadPuzzle(char *argv[])
 {
    int i;
    FILE *file;
-   file = fopen("wpuzzle.txt", "r");
+   file = fopen(argv[1], "r");
 
    if (file == NULL)
    {
-      printf("Erreur %d\n", errno);
-      return 0;
+      printf("Erreur fichier source %d\n", errno);
+      exit(1);
    }
 
    for (i = 0; i < MAX_COL_LINE; ++i)
