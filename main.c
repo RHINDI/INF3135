@@ -128,6 +128,7 @@ int horiVertiSearch(char *wordPointer, char *puzzelPointer, int wordLength, int 
          } else
          {
             for (j = wordLength - 1, k = i; j >= 0; --j, k += d) // backward match
+
                if (wordPointer[j] != puzzelPointer[k])
                {
                   break;
@@ -215,8 +216,7 @@ int LoadPuzzle()
 
 int removeNL(char *str)
 {
-   int length;
-   length = (int) strlen(str) - 1;
+   int length = (int) strlen(str) - 1;
    str[length] = '\0';
    return length;
 }
