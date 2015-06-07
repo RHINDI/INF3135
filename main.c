@@ -66,13 +66,14 @@ int main(int argc, char **argv)
             ++nbrWord;
          }
          fclose(file);
+         horiVertiFillWord(nbrWord);
+         // ShowPuzzle();
+         ShowResult();
       }
-      horiVertiFillWord(nbrWord);
-      // ShowPuzzle();
-      ShowResult();
 
    return 0;
 }
+
 
 void validerUsage(int argc)
 {
@@ -224,7 +225,6 @@ void LoadPuzzle(char *argv[])
       strcpy(&(puzzle[i][0]), word);
    }
    fclose(file);
-
 
 }
 
