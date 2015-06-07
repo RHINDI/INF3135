@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 
-int LoadPuzzle(char *argv[]);
+void LoadPuzzle(char *argv[]);
 
 int removeNL(char *str);
 
@@ -50,8 +50,8 @@ int main(int argc, char **argv)
 
    validerUsage(argc);
 
-   if (LoadPuzzle(argv))
-   {
+   LoadPuzzle(argv);
+
       //ShowPuzzle();
       if ((file = fopen("words.txt", "r")) != NULL)
       {
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
       horiVertiFillWord(nbrWord);
       // ShowPuzzle();
       ShowResult();
-   }
+
    return 0;
 }
 
@@ -205,7 +205,7 @@ void horiVertiFillWord(int nbrWord)
    }
 }
 
-int LoadPuzzle(char *argv[])
+void LoadPuzzle(char *argv[])
 {
    int i;
    FILE *file;
@@ -225,7 +225,7 @@ int LoadPuzzle(char *argv[])
    }
    fclose(file);
 
-   return 1;
+
 }
 
 int removeNL(char *str)
