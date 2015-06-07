@@ -241,10 +241,6 @@ void ShowResult()
    {
       for (j = 0; j < MAX_COL_LINE; ++j)
       {
-//         if (puzzle[i][j] != '*')
-//         {
-//            printf("%c", puzzle[i][j]);
-//         }
          puzzle[i][j] != '*' ? printf("%c", puzzle[i][j]):0;
       }
    }
