@@ -58,6 +58,8 @@ int main(int argc, char **argv)
          while (fgets(word, MAX_COL_LINE + 1, file) != NULL)
          {
             wordLength = removeNL(word);
+            pFP = horiVertiFingerprint(word, wordLength, 1);
+
             if (!(verticalSearch(word, wordLength, nbrWord)))
             {
                horizontalSearch(word, wordLength, nbrWord);
@@ -86,13 +88,11 @@ void validerUsage(int argc)
 
 int horizontalSearch(char *word, int wordLength, int nbrWord)
 {
-   int i;
-   pFP = horiVertiFingerprint(word, wordLength, 1);
-
+   int i , retourH;
 
    for (i = 0; i < MAX_COL_LINE; ++i)
    {
-      int retourH = horiVertiSearch(word, &(puzzle[i][0]), wordLength, 1, nbrWord, 0);
+      retourH = horiVertiSearch(word, &(puzzle[i][0]), wordLength, 1, nbrWord, 0);
       if (retourH)
       {
          break;
@@ -103,12 +103,11 @@ int horizontalSearch(char *word, int wordLength, int nbrWord)
 
 int verticalSearch(char *word, int wordLength, int nbrWord)
 {
-   int j;
-   pFP = horiVertiFingerprint(word, wordLength, 1);
+   int j , retourV;
 
    for (j = 0; j < MAX_COL_LINE; ++j)
    {
-      int retourV = horiVertiSearch(word, &(puzzle[0][j]), wordLength, MAX_COL_LINE, nbrWord, 1);
+      retourV = horiVertiSearch(word, &(puzzle[0][j]), wordLength, MAX_COL_LINE, nbrWord, 1);
       if (retourV)
       {
          break;
@@ -120,9 +119,9 @@ int verticalSearch(char *word, int wordLength, int nbrWord)
 
 int horiVertiSearch(char *wordPointer, char *puzzelPointer, int wordLength, int d, int nbrWord, int caller)
 {
-   int i, j, k, tFP;
-   int pMaxIdx = wordLength * d;
-   int tMaxIdx = (MAX_COL_LINE - wordLength) * d;
+   int i, j, k, tFP, pMaxIdx, tMaxIdx;
+   pMaxIdx = wordLength * d;
+   tMaxIdx = (MAX_COL_LINE - wordLength) * d;
 
    tFP = horiVertiFingerprint(puzzelPointer, pMaxIdx, d);
 
@@ -185,22 +184,20 @@ int horiVertiFingerprint(char s[], int length, int d)
 
 void horiVertiFillWord(int nbrWord)
 {
-   int d, i, k, j, wordLength, readingDirection;
-   char *wordPonter;
+   int d, i, k, j;
+   char *wordPionter;
 
    for (k = 0; k < nbrWord; ++k)
    {
       fistr = wordPosiDer[k];
       j = fistr.pos;
-      wordLength = fistr.wordLength;
-      readingDirection = fistr.caller;
-      wordPonter = fistr.puzzelPointer;
+      wordPionter = fistr.puzzelPointer;
 
-      d = readingDirection == 0 ? 1 : MAX_COL_LINE;
+      d = fistr.caller == 0 ? 1 : MAX_COL_LINE;
 
-      for (i = 0; i < wordLength; ++i)
+      for (i = 0; i < fistr.wordLength; ++i)
       {
-         wordPonter[j] = '*';
+         wordPionter[j] = '*';
          j += d;
       }
    }
