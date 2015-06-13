@@ -3,16 +3,16 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Function prototypes definitions
+void LoadPuzzle(FILE *file);
 
-void LoadPuzzle(char *argv[]);
+int removeNewLineChar(char *str);
 
-int removeNL(char *str);
-
-int horiVertiFingerprint(char s[], int length, int d);
+int sumOfAsciiCodes(char s[], int length, int d);
 
 int verticalSearch(char *word, int wordLength, int nbrWord);
 
-int horizontalSearch(char *word, int wordLength, int nbrWord);
+void horizontalSearch(char *word, int wordLength, int nbrWord);
 
 int horiVertiSearch(char *p, char *t, int pLen, int d, int nbrWord, int caller);
 
@@ -20,15 +20,15 @@ void fillWordPosiDerTab(int nbrWord, int pos, int wordLength, int caller, char *
 
 void horiVertiFillWord(int nbrWord);
 
-void ShowPuzzle();
-
 void ShowResult();
+
 void validerUsage(int argc);
 
-#define MAX_COL_LINE 13
-#define MAX_WORD 50
+int searchWords(const FILE *file, int wordLength, int nbrWord);
 
-
+/*
+ * A structure with three fields, packed as one entity
+ */
 typedef struct
 {
    int pos;
@@ -37,46 +37,57 @@ typedef struct
    char *puzzelPointer;
 } FIstr;
 
-char puzzle[MAX_COL_LINE][MAX_COL_LINE], word[MAX_COL_LINE + 1];
-FIstr fistr;
-FIstr wordPosiDer[MAX_WORD];
-int  pFP;
+//Global variables - values are known throughout the program.
+char puzzle[13][13]; // puzzle array
+char word[14];       // words array
+FIstr fistr;         // structure of the position of the word funds
+FIstr wordPosiDer[50]; // stctures array
+int patternFingerprint;
 
 int main(int argc, char **argv)
 {
    FILE *file;
-   int wordLength;
-   int nbrWord = 0;
-
+   int wordLength, nbrWord;
+   nbrWord = 0;
+   
    validerUsage(argc);
+   file = fopen(argv[1], "r");
+   if (file == NULL)
+   {
+      printf("Erreur fichier source %d\n", errno);
+      exit(1);
+   }
 
-   LoadPuzzle(argv);
-
-      //ShowPuzzle();
-      if ((file = fopen("words.txt", "r")) != NULL)
-      {
-         while (fgets(word, MAX_COL_LINE + 1, file) != NULL)
-         {
-            wordLength = removeNL(word);
-            pFP = horiVertiFingerprint(word, wordLength, 1);
-
-            if (!(verticalSearch(word, wordLength, nbrWord)))
-            {
-               horizontalSearch(word, wordLength, nbrWord);
-
-            }
-            ++nbrWord;
-         }
-         fclose(file);
-         horiVertiFillWord(nbrWord);
-         // ShowPuzzle();
-         ShowResult();
-      }
-
+   LoadPuzzle(file);
+   nbrWord = searchWords(file, wordLength, nbrWord);
+   fclose(file);
+   horiVertiFillWord(nbrWord);
+   ShowResult();
    return 0;
 }
 
+int searchWords(const FILE *file, int wordLength, int nbrWord)
+{
+   while (fgets(word, 13 + 1, file) != NULL && word[0] != '\n')
+   {
+      wordLength = removeNewLineChar(word);
+      patternFingerprint = sumOfAsciiCodes(word, wordLength, 1);
 
+      if (!(verticalSearch(word, wordLength, nbrWord)))
+      {
+         horizontalSearch(word, wordLength, nbrWord);
+
+      }
+      ++nbrWord;
+   }
+   return nbrWord;
+}
+
+// Functions are defined  below
+
+/*
+ * A structure with three fields, packed as one entity
+ */
 void validerUsage(int argc)
 {
    if (argc != 2)
@@ -86,11 +97,14 @@ void validerUsage(int argc)
    }
 }
 
-int horizontalSearch(char *word, int wordLength, int nbrWord)
+/*
+ * A structure with three fields, packed as one entity
+ */
+void horizontalSearch(char *word, int wordLength, int nbrWord)
 {
-   int i , retourH;
+   int i, retourH;
 
-   for (i = 0; i < MAX_COL_LINE; ++i)
+   for (i = 0; i < 13; ++i)
    {
       retourH = horiVertiSearch(word, &(puzzle[i][0]), wordLength, 1, nbrWord, 0);
       if (retourH)
@@ -98,36 +112,43 @@ int horizontalSearch(char *word, int wordLength, int nbrWord)
          break;
       }
    }
-   return i < MAX_COL_LINE;
 }
 
+
+/*
+ * A structure with three fields, packed as one entity
+ */
 int verticalSearch(char *word, int wordLength, int nbrWord)
 {
-   int j , retourV;
+   int j, retourV;
 
-   for (j = 0; j < MAX_COL_LINE; ++j)
+   for (j = 0; j < 13; ++j)
    {
-      retourV = horiVertiSearch(word, &(puzzle[0][j]), wordLength, MAX_COL_LINE, nbrWord, 1);
+      retourV = horiVertiSearch(word, &(puzzle[0][j]), wordLength, 13, nbrWord, 1);
       if (retourV)
       {
          break;
       }
    }
-   return j < MAX_COL_LINE;
+   return j < 13;
 }
 
-
+/*
+ * A structure with three fields, packed as one entity
+ */
 int horiVertiSearch(char *wordPointer, char *puzzelPointer, int wordLength, int d, int nbrWord, int caller)
 {
-   int i, j, k, tFP, pMaxIdx, tMaxIdx;
-   pMaxIdx = wordLength * d;
-   tMaxIdx = (MAX_COL_LINE - wordLength) * d;
+   int i, j, k, targetFingerprint, pMaxIdx, tMaxIdx;
 
-   tFP = horiVertiFingerprint(puzzelPointer, pMaxIdx, d);
+   pMaxIdx = wordLength * d;
+   tMaxIdx = (13 - wordLength) * d;
+
+   targetFingerprint = sumOfAsciiCodes(puzzelPointer, pMaxIdx, d);
+
 
    for (i = 0; i <= tMaxIdx; i += d)
    {
-      if (pFP == tFP)
+      if (patternFingerprint == targetFingerprint)
       {
          for (j = 0, k = i; j < wordLength; ++j, k += d) // forward match
             if (wordPointer[j] != puzzelPointer[k])
@@ -155,13 +176,16 @@ int horiVertiSearch(char *wordPointer, char *puzzelPointer, int wordLength, int 
          }
       } else
       {
-         tFP += puzzelPointer[i + pMaxIdx] - puzzelPointer[i];
+         targetFingerprint += puzzelPointer[i + pMaxIdx] - puzzelPointer[i];
       }
    }
    return 0;
 }
 
 
+/*
+ * A structure with three fields, packed as one entity
+ */
 void fillWordPosiDerTab(int nbrWord, int pos, int wordLength, int caller, char *puzzelPointer)
 {
    fistr.pos = pos;
@@ -170,18 +194,28 @@ void fillWordPosiDerTab(int nbrWord, int pos, int wordLength, int caller, char *
    fistr.puzzelPointer = puzzelPointer;
 
    wordPosiDer[nbrWord] = fistr;
-
 }
 
-int horiVertiFingerprint(char s[], int length, int d)
+
+/*
+ * A structure with three fields, packed as one entity
+ */
+
+int sumOfAsciiCodes(char s[], int length, int d)
 {
    int j, sum;
    sum = 0;
    for (j = 0; j < length; j += d)
+   {
       sum += s[j];
+   }
    return sum;
 }
 
+
+/*
+ * A structure with three fields, packed as one entity
+ */
 void horiVertiFillWord(int nbrWord)
 {
    int d, i, k, j;
@@ -193,7 +227,7 @@ void horiVertiFillWord(int nbrWord)
       j = fistr.pos;
       wordPionter = fistr.puzzelPointer;
 
-      d = fistr.caller == 0 ? 1 : MAX_COL_LINE;
+      d = fistr.caller == 0 ? 1 : 13;
 
       for (i = 0; i < fistr.wordLength; ++i)
       {
@@ -203,56 +237,46 @@ void horiVertiFillWord(int nbrWord)
    }
 }
 
-void LoadPuzzle(char *argv[])
+
+/*
+ * A structure with three fields, packed as one entity
+ */
+void LoadPuzzle(FILE *file)
 {
    int i;
-   FILE *file;
-   file = fopen(argv[1], "r");
 
-   if (file == NULL)
+   for (i = 0; i < 13; ++i)
    {
-      printf("Erreur fichier source %d\n", errno);
-      exit(1);
-   }
-
-   for (i = 0; i < MAX_COL_LINE; ++i)
-   {
-      fgets(word, MAX_COL_LINE + 1, file);
-      removeNL(word);
+      fgets(word, 13 + 1, file);
+      removeNewLineChar(word);
       strcpy(&(puzzle[i][0]), word);
    }
-   fclose(file);
-
 }
 
-int removeNL(char *str)
+
+/*
+ * A structure with three fields, packed as one entity
+ */
+int removeNewLineChar(char *str)
 {
    int length = (int) strlen(str) - 1;
    str[length] = '\0';
    return length;
 }
 
-void ShowPuzzle()
-{
-   int i, j;
-   for (i = 0; i < MAX_COL_LINE; ++i)
-   {
-      for (j = 0; j < MAX_COL_LINE; ++j)
-      {
-         printf("%c", puzzle[i][j]);
-      }
-      printf("\n");
-   }
-}
 
+
+/*
+ * A structure with three fields, packed as one entity
+ */
 void ShowResult()
 {
    int i, j;
-   for (i = 0; i < MAX_COL_LINE; ++i)
+   for (i = 0; i < 13; ++i)
    {
-      for (j = 0; j < MAX_COL_LINE; ++j)
+      for (j = 0; j < 13; ++j)
       {
-         puzzle[i][j] != '*' ? printf("%c", puzzle[i][j]):0;
+         puzzle[i][j] != '*' ? printf("%c", puzzle[i][j]) : 0;
       }
    }
    printf("\n");
