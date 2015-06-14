@@ -19,7 +19,7 @@
 
 /*--------------------------définitions des prototypes des fonctions.--------------------------*/
 
-void LoadPuzzle(FILE *file);
+void loadPuzzle(FILE *file);
 
 int removeNewLineChar(char *str);
 
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
       exit(1);
    }
 
-   LoadPuzzle(file);
+   loadPuzzle(file);
    nbrWord = searchWords(file, wordLength, nbrWord);
 
    if (fclose(file) == EOF)
@@ -96,12 +96,12 @@ int main(int argc, char **argv)
 /** @Description   appele les méthodes de recherche
  *
  *  searchWords()
- *  li une chaque mot à rechercher puis fait appel aux méthodes
+ *  lit une chaque mot à rechercher puis fait appel aux méthodes
  *  de recherche soit verticalement ou horizontalement
  *
- *  @param *file             =>
- *  @param wordLen           =>
- *  @param nbrWord           =>
+ *  @param *file             => pointeur de ficher a lire
+ *  @param wordLength        => la longueur du mot rechercher
+ *  @param nbrWord           => le nombre du mot recherche
  *  @retour nombre des mots
  */
 
@@ -358,7 +358,7 @@ void horiVertiFillWord(int nbrWord)
 
 /** @Description  remplir le tableau
  *
- *  LoadPuzzle()
+ *  loadPuzzle()
  *  lit une ligne du fichier fait appel  à  removeNewLineChar()
  *  pour supprimer le caractère du retour à la ligne
  *  puis copier la chaine de caractère dans la grille
@@ -368,7 +368,7 @@ void horiVertiFillWord(int nbrWord)
  */
 
 
-void LoadPuzzle(FILE *file)
+void loadPuzzle(FILE *file)
 {
    int i;
 
@@ -400,7 +400,7 @@ int removeNewLineChar(char *str)
 }
 
 
-/** @Description     Afficher le mot cache
+/** @Description     Afficher le mot cache a la console
  *
  *  ShowResult()
  *  lit la grille de gauche à droite et de haut en bas
