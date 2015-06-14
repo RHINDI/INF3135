@@ -1,7 +1,7 @@
-/** @fichier        motcache.c
- *  @discription    Resolution de mots caches
+/** @Fichier        motcache.c
+ *  @Description     Résolution de mots caches
  *
- *  Ce fichier contain la fonction main() du programe motcache.
+ *  Ce fichier contient la fonction main() du programme motcache.
  *
  *
  *  @Cours          : INF3135
@@ -11,12 +11,13 @@
  *  @code Permanent : RHIY20087605
  */
 
+
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-/*--------------------------definitions des prototypes des fonctions.--------------------------*/
+/*--------------------------définitions des prototypes des fonctions.--------------------------*/
 
 void LoadPuzzle(FILE *file);
 
@@ -41,10 +42,11 @@ void validerUsage(int argc);
 int searchWords(FILE *file, int wordLength, int nbrWord);
 
 /*
- * Une structure a quatre champs, emballe comme une seule entite
- * pour conserver les informations de reperage de pour chaque mots
+ * Une structure a quatre champs, emballe comme une seule entité
+ * pour conserver les informations de repérage de pour chaque mots
  * trouver.
  */
+
 typedef struct
 {
    int pos;
@@ -89,19 +91,20 @@ int main(int argc, char **argv)
    return 0;
 }
 
-/*------------------------------Functions are defined  below------------------------------*/
+/*------------------------------Fonctions sont définie en bas------------------------------*/
 
-/** @description  appele les methodes de recherche
+/** @Description   appele les méthodes de recherche
  *
  *  searchWords()
- *  li une chaque mot a rechercher puis fait appele au methode
- *  de recherche soit verticalement ou horizontalment
+ *  li une chaque mot à rechercher puis fait appel aux méthodes
+ *  de recherche soit verticalement ou horizontalement
  *
  *  @param *file             =>
  *  @param wordLen           =>
  *  @param nbrWord           =>
  *  @retour nombre des mots
  */
+
 
 int searchWords(FILE *file, int wordLength, int nbrWord)
 {
@@ -121,15 +124,16 @@ int searchWords(FILE *file, int wordLength, int nbrWord)
 }
 
 
-/** @description validation des arguments
+/** @Description  validation des arguments
  *
  *  validerUsage()
- *  valide que le programe a bien recu en parametre une fichier.txt
+ *  valide que le programme a bien reçu en paramètre une fichier.txt
  *
  *
- *  @param argc     => parametre qu'a recu le programme
+ *  @param argc     => paramètre qu'a reçu le programme
  *  @retour rien
  */
+
 
 void validerUsage(int argc)
 {
@@ -140,19 +144,20 @@ void validerUsage(int argc)
    }
 }
 
-/** @description  recherche horizontle
+/** @Description   recherche horizontale
  *
  *  horizontalSearch()
- *  fait appel a la methode qui recherche dans la grille
- *  mais avec des parametres lui permettant de ce deplacer
+ *  fait appel à la méthode qui recherche dans la grille
+ *  mais avec des paramètres lui permettant de ce déplacé
  *  horizontalement dans la grille
  *
  *
- *  @param *word             => pointeur vers le mots achercher
- *  @param wordLength        => la longeur du mots rechercher
- *  @param nbrWord           => le nombre du mots recherche
+ *  @param *word             => pointeur vers le mot à chercher
+ *  @param wordLength        => la longueur du mot rechercher
+ *  @param nbrWord           => le nombre du mot recherche
  *  @retour rien
  */
+
 
 void horizontalSearch(char *word, int wordLength, int nbrWord)
 {
@@ -169,19 +174,20 @@ void horizontalSearch(char *word, int wordLength, int nbrWord)
 }
 
 
-/** @description  recherche verticale
+/** @Description   recherche verticale
  *
  *  verticalSearch()
- *  fait appel a la methode qui recherche dans la grille
- *  mais avec des parametres lui permettant de ce deplacer
+ *  fait appel à la méthode qui recherche dans la grille
+ *  mais avec des paramètres lui permettant de ce déplacé
  *  verticalement dans la grille
  *
  *
- *  @param *word             => pointeur vers le mots achercher
- *  @param wordLength        => la longeur du mots rechercher
- *  @param nbrWord           => le nombre du mots recherche
+ *  @param *word             => pointeur vers le mot à chercher
+ *  @param wordLength        => la longueur du mot rechercher
+ *  @param nbrWord           => le nombre du mot recherche
  *  @retour rien
  */
+
 
 int verticalSearch(char *word, int wordLength, int nbrWord)
 {
@@ -198,22 +204,23 @@ int verticalSearch(char *word, int wordLength, int nbrWord)
    return j < 13;
 }
 
-/** @ description    chercher dans la grille
+/** @Description    chercher dans la grille
  *
  *
  *  horiVertiSearch()
- *  elle fait la recherche du mots dans la grille
- *  verticalement ou horizontalement depandament du parametre de deplacement
- *  est dans tout les directions
+ *  elle fait la recherche des mots dans la grille
+ *  verticalement ou horizontalement dépendamment du paramètre de déplacement
+ *  est dans tous les directions
  *
- *  @param *wordPointer      => pointeur du mots a chercher
+ *  @param *wordPointer      => pointeur du mot à chercher
  *  @param *puzzelPointer    => pointeur de la grille
- *  @param wordLength        => la longeur du mots
- *  @param d                 => le nombre de sout pour le deplacement du pointeur
- *  @param nbrWord           => le nombre du mots
- *  @param caller            => id de la methode qui fait l'appelle (0 = horizontal , 1 = vertical)
+ *  @param wordLength        => la longueur du mot
+ *  @param d                 => le nombre de saut  pour le déplacement du pointeur
+ *  @param nbrWord           => le nombre du mot
+ *  @param caller            => id de la méthodes qui fait l'appelle (0 = horizontal , 1 = vertical)
  *  @retour 0 ou 1
  */
+
 
 int horiVertiSearch(char *wordPointer, char *puzzelPointer, int wordLength, int d, int nbrWord, int caller)
 {
@@ -262,21 +269,22 @@ int horiVertiSearch(char *wordPointer, char *puzzelPointer, int wordLength, int 
 }
 
 
-/** @description   entrer les informations dans la structure
+/** @Description    entrer les informations dans la structure
  *
  *  filWordPosiDerTab()
- *  affect tout les parametres pour retrouver le mots dans la grille
- *  dans les variables declare dans la structure
- *  poui entregister cette structure dans un tableux
+ *  affect tous les paramètres pour retrouver les mots dans la grille
+ *  dans les variables déclarés dans la structure
+ *  ensuite  enregistrer cette structure dans un tableau
  *
  *
- *  @param  nbrWord        => le numero du mots
- *  @param  pos            => position du mots
- *  @param  wordLength     => la longeur du mots
- *  @param  caller         => id de la methode qui a trouver le mots
- *  @param  *puzzelPointer => pointeur sur le debut du mots
+ *  @param  nbrWord        => le numéro du mot
+ *  @param  pos            => position du mot
+ *  @param  wordLength     => la longueur du mot
+ *  @param  caller         => id de la méthode qui a trouvé le mot
+ *  @param  *puzzelPointer => pointeur sur le début du mot
  *  @retour rien
  */
+
 
 void fillWordPosiDerTab(int nbrWord, int pos, int wordLength, int caller, char *puzzelPointer)
 {
@@ -289,17 +297,18 @@ void fillWordPosiDerTab(int nbrWord, int pos, int wordLength, int caller, char *
 }
 
 
-/** @description somme des code ASCII
+/** @Description  somme des code ASCII
  *
  *  somOfAsciiCodes()
- *  calcul et retourne  la somme des code ASCII des carataire de la chaine
- *  passer en parametre.
+ *  calcul et retourne  la somme des code ASCII des caractères de la chaine
+ *  passer en paramètre.
  *
- *  @param  chaine de caractaire
- *  @param  la longeur de la chaine
- *  @param  la valeur de deplacement dans la grille
+ *  @param  chaine des caractères
+ *  @param  la longueur de la chaine
+ *  @param  la valeur de déplacement dans la grille
  *  @retour la somme des code ascii de la chaine
  */
+
 
 int sumOfAsciiCodes(char str[], int length, int d)
 {
@@ -313,16 +322,17 @@ int sumOfAsciiCodes(char str[], int length, int d)
 }
 
 
-/** @description effacer les mots dans la grille
+/** @Description  effacer les mots dans la grille
  *
  * horiVertiFillWord()
- * parcour la grille horisentallement et verticalement
- * pour effacer les carataires constituent les mots
+ * parcoure la grille horizontalement et verticalement
+ * pour effacer les caractères constituent les mots
  * en les remplacent par '*'
  *
  *  @param   le nombre des mots dans la graille
  *  @retour  rien
  */
+
 
 void horiVertiFillWord(int nbrWord)
 {
@@ -346,16 +356,17 @@ void horiVertiFillWord(int nbrWord)
 }
 
 
-/** @description remplire le tableau
+/** @Description  remplir le tableau
  *
  *  LoadPuzzle()
- *  lit une ligne du fichier fait appel  a  removeNewLineChar()
- *  pour supprimer le caractaire du retour a la ligne
- *  puis copier la chaine de caractaire dans la grille
+ *  lit une ligne du fichier fait appel  à  removeNewLineChar()
+ *  pour supprimer le caractère du retour à la ligne
+ *  puis copier la chaine de caractère dans la grille
  *
  *  @param    un pointeur ver le fichier a lire
  *  @retour   rien
  */
+
 
 void LoadPuzzle(FILE *file)
 {
@@ -370,15 +381,16 @@ void LoadPuzzle(FILE *file)
 }
 
 
-/** @description Supremet de carataire '\n'
+/** @Description  Suppression de caractère '\n'
  *
  *  removeNewLineChar()
- *  Supprime Le carataire d'une nouvelle ligne ('\n'),
- *  de la lignes passer en parametre.
+ *  Supprime Le caractère d'une nouvelle ligne ('\n'),
+ *  de la ligne passer en paramètre.
  *
  *  @param *str pointeur sur la chaine a traitre
- *  @retour la lengeur de la chaine traitee
+ *  @retour la langueur de la chaine traitée
  */
+
 
 int removeNewLineChar(char *str)
 {
@@ -388,16 +400,17 @@ int removeNewLineChar(char *str)
 }
 
 
-/** @description    Afficher le mot cache
+/** @Description     Afficher le mot cache
  *
  *  ShowResult()
- *  lit le tableux a deux dimention de gouche a droite et de haut en bas
- *  tout caractaire rencontre diffirant de '*' doit etre afficher a la
+ *  lit la grille de gauche à droite et de haut en bas
+ *  tout caractère rencontre différant de '*' doit être afficher a la
  *  console
  *
  *  @param non
  *  @retour rien
  */
+
 
 void ShowResult()
 {
