@@ -91,11 +91,15 @@ int main(int argc, char **argv)
 
 /*------------------------------Functions are defined  below------------------------------*/
 
-/** @description
+/** @description  appele les methodes de recherche
  *
- *  @param d                 =>
+ *  searchWords()
+ *  li une chaque mot a rechercher puis fait appele au methode
+ *  de recherche soit verticalement ou horizontalment
+ *
+ *  @param *file             =>
+ *  @param wordLen           =>
  *  @param nbrWord           =>
- *  @param caller            =>
  *  @retour nombre des mots
  */
 
