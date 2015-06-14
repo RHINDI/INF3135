@@ -65,6 +65,8 @@ int patternFingerprint;
 
 int main(int argc, char **argv)
 {
+
+
    FILE *file;
    int wordLength, nbrWord;
    nbrWord = 0;
@@ -92,6 +94,34 @@ int main(int argc, char **argv)
 }
 
 /*------------------------------Fonctions sont définie en bas------------------------------*/
+
+
+/** @Description  remplir le tableau
+ *
+ *  loadPuzzle()
+ *  lit une ligne du fichier fait appel  à  removeNewLineChar()
+ *  pour supprimer le caractère du retour à la ligne
+ *  puis copier la chaine de caractère dans la grille
+ *
+ *  @param    un pointeur ver le fichier a lire
+ *  @retour   rien
+ */
+
+
+void loadPuzzle(FILE *file)
+{
+   int i;
+
+   for (i = 0; i < 13; ++i)
+   {
+      fgets(word, 13 + 1, file);
+      removeNewLineChar(word);
+      strcpy(&(puzzle[i][0]), word);
+   }
+}
+
+
+
 
 /** @Description   appele les méthodes de recherche
  *
@@ -352,31 +382,6 @@ void horiVertiFillWord(int nbrWord)
          wordPionter[j] = '*';
          j += d;
       }
-   }
-}
-
-
-/** @Description  remplir le tableau
- *
- *  loadPuzzle()
- *  lit une ligne du fichier fait appel  à  removeNewLineChar()
- *  pour supprimer le caractère du retour à la ligne
- *  puis copier la chaine de caractère dans la grille
- *
- *  @param    un pointeur ver le fichier a lire
- *  @retour   rien
- */
-
-
-void loadPuzzle(FILE *file)
-{
-   int i;
-
-   for (i = 0; i < 13; ++i)
-   {
-      fgets(word, 13 + 1, file);
-      removeNewLineChar(word);
-      strcpy(&(puzzle[i][0]), word);
    }
 }
 
