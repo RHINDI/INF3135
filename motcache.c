@@ -34,15 +34,15 @@ typedef struct
 
 /*--------------------------définitions des prototypes des fonctions.--------------------------*/
 
-void loadPuzzle(FILE *file);
+void loadPuzzle(FILE *file, char puzzle[13][13]);
 
 int removeNewLineChar(char *str);
 
 int sumOfAsciiCodes(char str[], int length, int d);
 
-int verticalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray);
+int verticalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray, char puzzle[13][13]);
 
-void horizontalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray);
+void horizontalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray, char puzzle[13][13]);
 
 int horiVertiSearch(char *p, char *t, int pLen, int d, int nbrWord, int caller, FIstr *structArray);
 
@@ -50,22 +50,21 @@ void fillWordPosiDerTab(int nbrWord, int pos, int wordLength, int caller, char *
 
 void horiVertiFillWord(int nbrWord, FIstr *structArray);
 
-void ShowResult();
+void ShowResult(char puzzle[13][13]);
 
 void validerUsage(int argc);
 
-void searchWords(FILE *file, int wordLength);
+void searchWords(FILE *file, int wordLength, char puzzle[13][13]);
 
-/*-------------Variables globales - les valeurs sont connues dans le programme.-------------*/
 
-char puzzle[13][13];
+
 
 
 
 int main(int argc, char **argv)
 {
 
-
+   char puzzle[13][13];
    FILE *file;
    int wordLength;
 
@@ -79,8 +78,8 @@ int main(int argc, char **argv)
       exit(1);
    }
 
-   loadPuzzle(file);
-   searchWords(file, wordLength);
+   loadPuzzle(file, puzzle);
+   searchWords(file, wordLength, puzzle);
 
    if (fclose(file) == EOF)
    {
@@ -88,7 +87,7 @@ int main(int argc, char **argv)
       return 1;
    }
 
-   ShowResult();
+   ShowResult(puzzle);
    return 0;
 }
 
@@ -129,7 +128,7 @@ void validerUsage(int argc)
  */
 
 
-void loadPuzzle(FILE *file)
+void loadPuzzle(FILE *file , char puzzle[13][13])
 {
    int i;
    char line[13 + 1];
@@ -149,6 +148,7 @@ void loadPuzzle(FILE *file)
  *  searchWords()
  *  lit une chaque mot à rechercher puis fait appel aux méthodes
  *  de recherche soit verticalement ou horizontalement
+ *  puit tout supprimer avec horiVertiFillWord()
  *
  *  @param *file             => pointeur de ficher a lire
  *  @param wordLength        => la longueur du mot rechercher
@@ -157,7 +157,7 @@ void loadPuzzle(FILE *file)
  */
 
 
-void searchWords(FILE *file, int wordLength)
+void searchWords(FILE *file, int wordLength, char puzzle[13][13])
 {
    char word[13 + 1];
    int nbrWord = 0;
@@ -167,9 +167,9 @@ void searchWords(FILE *file, int wordLength)
    {
       wordLength = removeNewLineChar(word);
 
-      if (!(verticalSearch(word, wordLength, nbrWord, structArray)))
+      if (!(verticalSearch(word, wordLength, nbrWord, structArray, puzzle)))
       {
-         horizontalSearch(word, wordLength, nbrWord, structArray);
+         horizontalSearch(word, wordLength, nbrWord, structArray, puzzle);
 
       }
       ++nbrWord;
@@ -195,7 +195,7 @@ void searchWords(FILE *file, int wordLength)
  */
 
 
-int verticalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray)
+int verticalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray, char puzzle[13][13])
 {
    int j, retourV;
 
@@ -227,7 +227,7 @@ int verticalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray)
  */
 
 
-void horizontalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray)
+void horizontalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray, char puzzle[13][13])
 {
    int i, retourH;
 
@@ -433,12 +433,12 @@ int removeNewLineChar(char *str)
  */
 
 
-void ShowResult()
+void ShowResult(char puzzle[13][13])
 {
    int i, j;
-   for (i = 0; i < 13; ++i)
+   for (i = 0; i < 12; ++i)
    {
-      for (j = 0; j < 13; ++j)
+      for (j = 0; j < 12; ++j)
       {
          puzzle[i][j] != '*' ? printf("%c", puzzle[i][j]) : 0;
       }
