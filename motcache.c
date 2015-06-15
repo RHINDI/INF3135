@@ -17,29 +17,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-/*--------------------------définitions des prototypes des fonctions.--------------------------*/
-
-void loadPuzzle(FILE *file);
-
-int removeNewLineChar(char *str);
-
-int sumOfAsciiCodes(char str[], int length, int d);
-
-int verticalSearch(char *word, int wordLength, int nbrWord);
-
-void horizontalSearch(char *word, int wordLength, int nbrWord);
-
-int horiVertiSearch(char *p, char *t, int pLen, int d, int nbrWord, int caller);
-
-void fillWordPosiDerTab(int nbrWord, int pos, int wordLength, int caller, char *puzzelPointer);
-
-void horiVertiFillWord(int nbrWord);
-
-void ShowResult();
-
-void validerUsage(int argc);
-
-int searchWords(FILE *file, int wordLength, int nbrWord);
 
 /*
  * Une structure a quatre champs, emballe comme une seule entité
@@ -55,21 +32,43 @@ typedef struct
    char *puzzelPointer;
 } FIstr;
 
+/*--------------------------définitions des prototypes des fonctions.--------------------------*/
+
+void loadPuzzle(FILE *file);
+
+int removeNewLineChar(char *str);
+
+int sumOfAsciiCodes(char str[], int length, int d);
+
+int verticalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray);
+
+void horizontalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray);
+
+int horiVertiSearch(char *p, char *t, int pLen, int d, int nbrWord, int caller, FIstr *structArray);
+
+void fillWordPosiDerTab(int nbrWord, int pos, int wordLength, int caller, char *puzzelPointer, FIstr *structArray);
+
+void horiVertiFillWord(int nbrWord, FIstr *structArray);
+
+void ShowResult();
+
+void validerUsage(int argc);
+
+void searchWords(FILE *file, int wordLength);
+
 /*-------------Variables globales - les valeurs sont connues dans le programme.-------------*/
 
 char puzzle[13][13];
-char word[13 + 1];
-FIstr fistr;
-FIstr structArray[50];
-int patternFingerprint;
+
+
 
 int main(int argc, char **argv)
 {
 
 
    FILE *file;
-   int wordLength, nbrWord;
-   nbrWord = 0;
+   int wordLength;
+
    wordLength = 0;
 
    validerUsage(argc);
@@ -81,77 +80,19 @@ int main(int argc, char **argv)
    }
 
    loadPuzzle(file);
-   nbrWord = searchWords(file, wordLength, nbrWord);
+   searchWords(file, wordLength);
 
    if (fclose(file) == EOF)
    {
       printf("Erreur lors de la fermeture du fichier.\n");
       return 1;
    }
-   horiVertiFillWord(nbrWord);
+
    ShowResult();
    return 0;
 }
 
 /*------------------------------Fonctions sont définie en bas------------------------------*/
-
-
-/** @Description  remplir le tableau
- *
- *  loadPuzzle()
- *  lit une ligne du fichier fait appel  à  removeNewLineChar()
- *  pour supprimer le caractère du retour à la ligne
- *  puis copier la chaine de caractère dans la grille
- *
- *  @param    un pointeur ver le fichier a lire
- *  @retour   rien
- */
-
-
-void loadPuzzle(FILE *file)
-{
-   int i;
-
-   for (i = 0; i < 13; ++i)
-   {
-      fgets(word, 13 + 1, file);
-      removeNewLineChar(word);
-      strcpy(&(puzzle[i][0]), word);
-   }
-}
-
-
-
-
-/** @Description   appele les méthodes de recherche
- *
- *  searchWords()
- *  lit une chaque mot à rechercher puis fait appel aux méthodes
- *  de recherche soit verticalement ou horizontalement
- *
- *  @param *file             => pointeur de ficher a lire
- *  @param wordLength        => la longueur du mot rechercher
- *  @param nbrWord           => le nombre du mot recherche
- *  @retour nombre des mots
- */
-
-
-int searchWords(FILE *file, int wordLength, int nbrWord)
-{
-   while (fgets(word, 13 + 1, file) != NULL && word[0] != '\n')
-   {
-      wordLength = removeNewLineChar(word);
-      patternFingerprint = sumOfAsciiCodes(word, wordLength, 1);
-
-      if (!(verticalSearch(word, wordLength, nbrWord)))
-      {
-         horizontalSearch(word, wordLength, nbrWord);
-
-      }
-      ++nbrWord;
-   }
-   return nbrWord;
-}
 
 
 /** @Description  validation des arguments
@@ -174,33 +115,68 @@ void validerUsage(int argc)
    }
 }
 
-/** @Description   recherche horizontale
+
+
+/** @Description  remplir le tableau
  *
- *  horizontalSearch()
- *  fait appel à la méthode qui recherche dans la grille
- *  mais avec des paramètres lui permettant de ce déplacé
- *  horizontalement dans la grille
+ *  loadPuzzle()
+ *  lit une ligne du fichier fait appel  à  removeNewLineChar()
+ *  pour supprimer le caractère du retour à la ligne
+ *  puis copier la chaine de caractère dans la grille
  *
- *
- *  @param *word             => pointeur vers le mot à chercher
- *  @param wordLength        => la longueur du mot rechercher
- *  @param nbrWord           => le nombre du mot recherche
- *  @retour rien
+ *  @param    un pointeur ver le fichier a lire
+ *  @retour   rien
  */
 
 
-void horizontalSearch(char *word, int wordLength, int nbrWord)
+void loadPuzzle(FILE *file)
 {
-   int i, retourH;
-
+   int i;
+   char line[13 + 1];
    for (i = 0; i < 13; ++i)
    {
-      retourH = horiVertiSearch(word, &(puzzle[i][0]), wordLength, 1, nbrWord, 0);
-      if (retourH)
-      {
-         break;
-      }
+      fgets(line, 13 + 1, file);
+      removeNewLineChar(line);
+      strcpy(&(puzzle[i][0]), line);
    }
+}
+
+
+
+
+/** @Description   appele les méthodes de recherche
+ *
+ *  searchWords()
+ *  lit une chaque mot à rechercher puis fait appel aux méthodes
+ *  de recherche soit verticalement ou horizontalement
+ *
+ *  @param *file             => pointeur de ficher a lire
+ *  @param wordLength        => la longueur du mot rechercher
+ *  @param nbrWord           => le nombre du mot recherche
+ *  @retour nombre des mots
+ */
+
+
+void searchWords(FILE *file, int wordLength)
+{
+   char word[13 + 1];
+   int nbrWord = 0;
+   FIstr structArray[60];
+
+   while (fgets(word, 13 + 1, file) != NULL && word[0] != '\n')
+   {
+      wordLength = removeNewLineChar(word);
+
+      if (!(verticalSearch(word, wordLength, nbrWord, structArray)))
+      {
+         horizontalSearch(word, wordLength, nbrWord, structArray);
+
+      }
+      ++nbrWord;
+   }
+
+   horiVertiFillWord(nbrWord,structArray);
+
 }
 
 
@@ -219,13 +195,13 @@ void horizontalSearch(char *word, int wordLength, int nbrWord)
  */
 
 
-int verticalSearch(char *word, int wordLength, int nbrWord)
+int verticalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray)
 {
    int j, retourV;
 
    for (j = 0; j < 13; ++j)
    {
-      retourV = horiVertiSearch(word, &(puzzle[0][j]), wordLength, 13, nbrWord, 1);
+      retourV = horiVertiSearch(word, &(puzzle[0][j]), wordLength, 13, nbrWord, 1, structArray);
       if (retourV)
       {
          break;
@@ -233,6 +209,39 @@ int verticalSearch(char *word, int wordLength, int nbrWord)
    }
    return j < 13;
 }
+
+
+
+/** @Description   recherche horizontale
+ *
+ *  horizontalSearch()
+ *  fait appel à la méthode qui recherche dans la grille
+ *  mais avec des paramètres lui permettant de ce déplacé
+ *  horizontalement dans la grille
+ *
+ *
+ *  @param *word             => pointeur vers le mot à chercher
+ *  @param wordLength        => la longueur du mot rechercher
+ *  @param nbrWord           => le nombre du mot recherche
+ *  @retour rien
+ */
+
+
+void horizontalSearch(char *word, int wordLength, int nbrWord, FIstr *structArray)
+{
+   int i, retourH;
+
+   for (i = 0; i < 13; ++i)
+   {
+      retourH = horiVertiSearch(word, &(puzzle[i][0]), wordLength, 1, nbrWord, 0, structArray);
+      if (retourH)
+      {
+         break;
+      }
+   }
+}
+
+
 
 /** @Description    chercher dans la grille
  *
@@ -252,33 +261,35 @@ int verticalSearch(char *word, int wordLength, int nbrWord)
  */
 
 
-int horiVertiSearch(char *wordPointer, char *puzzelPointer, int wordLength, int d, int nbrWord, int caller)
+int horiVertiSearch(char *wordPointer, char *puzzelPointer, int wordLength, int d, int nbrWord, int caller,
+                    FIstr *structArray)
 {
    int i, j, k, targetFingerprint, pMaxIdx, tMaxIdx;
-
+   int patternFingerprint;
    pMaxIdx = wordLength * d;
    tMaxIdx = (13 - wordLength) * d;
 
-   targetFingerprint = sumOfAsciiCodes(puzzelPointer, pMaxIdx, d);
+   patternFingerprint = sumOfAsciiCodes(wordPointer, wordLength, 1);
 
+   targetFingerprint = sumOfAsciiCodes(puzzelPointer, pMaxIdx, d);
 
    for (i = 0; i <= tMaxIdx; i += d)
    {
       if (patternFingerprint == targetFingerprint)
       {
-         for (j = 0, k = i; j < wordLength; ++j, k += d) // forward match
+         for (j = 0, k = i; j < wordLength; ++j, k += d)
             if (wordPointer[j] != puzzelPointer[k])
             {
                break;
             }
          if (j == wordLength)
          {
-            fillWordPosiDerTab(nbrWord, i, wordLength, caller, puzzelPointer);
+            fillWordPosiDerTab(nbrWord, i, wordLength, caller, puzzelPointer, structArray);
 
             return 1;
          } else
          {
-            for (j = wordLength - 1, k = i; j >= 0; --j, k += d) // backward match
+            for (j = wordLength - 1, k = i; j >= 0; --j, k += d)
 
                if (wordPointer[j] != puzzelPointer[k])
                {
@@ -286,7 +297,7 @@ int horiVertiSearch(char *wordPointer, char *puzzelPointer, int wordLength, int 
                }
             if (j == -1)
             {
-               fillWordPosiDerTab(nbrWord, i, wordLength, caller, puzzelPointer);
+               fillWordPosiDerTab(nbrWord, i, wordLength, caller, puzzelPointer, structArray);
                return 1;
             }
          }
@@ -316,8 +327,10 @@ int horiVertiSearch(char *wordPointer, char *puzzelPointer, int wordLength, int 
  */
 
 
-void fillWordPosiDerTab(int nbrWord, int pos, int wordLength, int caller, char *puzzelPointer)
+void fillWordPosiDerTab(int nbrWord, int pos, int wordLength, int caller, char *puzzelPointer, FIstr *structArray)
 {
+   FIstr fistr;
+
    fistr.pos = pos;
    fistr.wordLength = wordLength;
    fistr.caller = caller;
@@ -364,10 +377,11 @@ int sumOfAsciiCodes(char str[], int length, int d)
  */
 
 
-void horiVertiFillWord(int nbrWord)
+void horiVertiFillWord(int nbrWord, FIstr *structArray)
 {
    int d, i, k, j;
    char *wordPionter;
+   FIstr fistr;
 
    for (k = 0; k < nbrWord; ++k)
    {
@@ -399,6 +413,8 @@ void horiVertiFillWord(int nbrWord)
 
 int removeNewLineChar(char *str)
 {
+
+
    int length = (int) strlen(str) - 1;
    str[length] = '\0';
    return length;
@@ -429,3 +445,5 @@ void ShowResult()
    }
    printf("\n");
 }
+
+
