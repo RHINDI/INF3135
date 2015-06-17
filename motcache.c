@@ -150,6 +150,9 @@ void loadPuzzle(FILE *file , char puzzle[13][13])
  *  de recherche soit verticalement ou horizontalement
  *  puit tout supprimer avec horiVertiFillWord()
  *
+ *
+ *
+ *
  *  @param *file             => pointeur de ficher a lire
  *  @param wordLength        => la longueur du mot rechercher
  *  @param nbrWord           => le nombre du mot recherche
