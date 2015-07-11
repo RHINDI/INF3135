@@ -416,8 +416,6 @@ void horiVertiFillWord(int nbrWord, FIstr *structArray)
 
 int removeNewLineChar(char *str)
 {
-
-
    int length = (int) strlen(str) - 1;
    str[length] = '\0';
    return length;
